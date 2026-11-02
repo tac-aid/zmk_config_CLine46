@@ -16,106 +16,178 @@
     combos {
         compatible = "zmk,combos";
 
-        tab {
-            bindings = <&kp TAB>;
-            key-positions = <11 12>;
+        mkp_mb1 {
+            timeout-ms = <30>;
+            bindings = <&mkp MB1>;
+            key-positions = <19 20>;
+            layers = <0 7>;
         };
 
-        shift_tab {
-            bindings = <&kp LS(TAB)>;
-            key-positions = <12 13>;
+        mkp_mb2 {
+            timeout-ms = <30>;
+            bindings = <&mkp MB2>;
+            key-positions = <20 21>;
+            layers = <0 7>;
+        };
+
+        mkp_mb4 {
+            timeout-ms = <30>;
+            bindings = <&mkp MB4>;
+            key-positions = <31 32>;
+            layers = <0 7>;
+        };
+
+        mkp_mb5 {
+            timeout-ms = <30>;
+            bindings = <&mkp MB5>;
+            key-positions = <32 33>;
+            layers = <0 7>;
+        };
+
+        mo_scroll {
+            timeout-ms = <30>;
+            bindings = <&mo 3>;
+            key-positions = <20 31>;
+            layers = <0>;
         };
     };
 
     macros {
-        to_layer_0: to_layer_0 {
-            compatible = "zmk,behavior-macro-one-param";
-            #binding-cells = <1>;
-            bindings = <&to 0 &macro_param_1to1 &kp MACRO_PLACEHOLDER>;
-            label = "TO_LAYER_0";
-        };
-    };
+        // to_layer_0: to_layer_0 {
+        //     compatible = "zmk,behavior-macro-one-param";
+        //     #binding-cells = <1>;
+        //     bindings = <&to 0 &macro_param_1to1 &kp MACRO_PLACEHOLDER>;
+        //     label = "TO_LAYER_0";
+        // };
 
-    behaviors {
-        lt_to_layer_0: lt_to_layer_0 {
-            compatible = "zmk,behavior-hold-tap";
-            label = "LAYER_TAP_TO_0";
-            bindings = <&mo>, <&to_layer_0>;
-
+        lm: lm {
+            compatible = "zmk,behavior-macro-two-param";
+            wait-ms = <0>;
+            tap-ms = <0>;
             #binding-cells = <2>;
-            tapping-term-ms = <200>;
+            bindings
+                = <&macro_param_1to1>
+                , <&macro_press &mo MACRO_PLACEHOLDER>
+                , <&macro_param_2to1>
+                , <&macro_press &kp MACRO_PLACEHOLDER>
+                , <&macro_pause_for_release>
+                , <&macro_param_2to1>
+                , <&macro_release &kp MACRO_PLACEHOLDER>
+                , <&macro_param_1to1>
+                , <&macro_release &mo MACRO_PLACEHOLDER>
+                ;
+            label = "LAYER_MOD";
         };
     };
 
+    // behaviors {
+    //     lt_to_layer_0: lt_to_layer_0 {
+    //         compatible = "zmk,behavior-hold-tap";
+    //         label = "LAYER_TAP_TO_0";
+    //         bindings = <&mo>, <&to_layer_0>;
+    //
+    //         #binding-cells = <2>;
+    //         tapping-term-ms = <200>;
+    //     };
+    // };
+
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+
+        tri_layer {
+            if-layers = <1 2>;
+            then-layer = <5>;
+        };
+    };
+
+    /*
+     * キーマップ（default_layer）と key-positions の対応表
+     * ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     * |  0: TAB    |  1: Q      |  2: L      |  3: U      |  4: SEMI   |  5: COLON  |                           |  6: F      |  7: W      |  8: R      |  9: Y      | 10: P      | 11: BSPC   |
+     * | 12: LCTRL  | 13: E      | 14: I      | 15: A      | 16: O      | 17: COMMA  |                           | 18: K      | 19: T      | 20: N      | 21: S      | 22: H      | 23: ESC    |
+     * | 24: LSHIFT | 25: Z      | 26: X      | 27: C      | 28: V      | 29: DOT    |                           | 30: G      | 31: D      | 32: M      | 33: J      | 34: B      | 35: LG(SP) |
+     *              | 36: none   | 37: none   | 38: LALT   | 39: LGUI   | 40: MO(1)  | 41: LT4/SP   | 42: RET    | 43: MO(2)  |                         | 44: MO(6)   | 45: none   |
+     * ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+     */
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
             bindings = <
-&kp TAB      &kp Q     &kp W      &kp E     &kp R                &kp T                                            &kp Y     &kp U   &kp I       &kp O          &kp P       &kp LEFT_BRACKET
-&kp LCTRL    &kp A     &kp S      &kp D     &kp F                &kp G                                            &kp H     &kp J   &kp K       &kp L          &kp MINUS   &kp RIGHT_BRACKET
-&kp LSHIFT   &kp Z     &kp X      &kp C     &kp V                &kp B                                            &kp N     &kp M   &kp COMMA   &kp DOT        &mo 3       &kp RSHIFT
-             &kp ESC   &kp LGUI   &kp LALT  &lt 2 INT_MUHENKAN   &lt 1 SPACE   &mt LSFT INT_HENKAN      &kp RET   &kp BSPC                      &kp NUMBER_9   &kp DEL  
+&kp TAB        &kp Q     &kp L      &kp U       &kp SEMI      &kp COLON                  /* | */                  &kp F     &kp W   &kp R       &kp Y          &kp P       &kp BSPC
+&lm 7 LCTRL    &kp E     &kp I      &kp A       &kp O         &kp COMMA                  /* | */                  &kp K     &kp T   &kp N       &kp S          &kp H       &kp ESC
+&kp LSHIFT     &kp Z     &kp X      &kp C       &kp V         &kp DOT                    /* | */                  &kp G     &kp D   &kp M       &kp J          &kp B       &kp LG(SPACE)
+               &none     &none      &lm 7 LALT  &lm 7 LGUI    &mo 1         &lt 4 SPACE  /* | */  &kp RET         &mo 2                         &mo 6          &none
             >;
         };
 
-        
+
         layer_1 {
             bindings = <
-&kp CARET   &kp EQUAL      &kp NUMBER_7   &kp NUMBER_8   &kp NUMBER_9   &kp AT_SIGN                            &kp LEFT_PARENTHESIS    &kp DOUBLE_QUOTES   &kp RIGHT_PARENTHESIS   &kp SEMI    &kp EXCLAMATION   &kp QMARK
-&kp MINUS   &kp PLUS       &kp NUMBER_4   &kp NUMBER_5   &kp NUMBER_6   &kp HASH                               &kp LEFT_BRACKET        &kp SINGLE_QUOTE    &kp RIGHT_BRACKET       &kp COLON   &kp AMPERSAND     &kp PIPE
-&kp SLASH   &kp ASTERISK   &kp NUMBER_1   &kp NUMBER_2   &kp NUMBER_3   &kp UNDERSCORE                         &kp SLASH               &kp BACKSLASH       &kp COMMA               &kp DOT     &kp DOLLAR        &kp PERCENT
-            &kp ESC        &kp NUMBER_0   &kp DOT        &trans         &trans           &trans      &kp RET   &kp BSPC                                                            &kp DEL     &trans 
+&kp ESC          &kp F1   &kp F2    &kp F3    &kp F4    &none                            /* | */                  &kp COLON   &kp NUMBER_1   &kp NUMBER_2   &kp NUMBER_3   &none          &kp BSPC
+&sk LA(LGUI)     &kp F5   &kp F6    &kp F7    &kp F8    &kp LC(LS(LA(F7)))               /* | */                  &kp DOT     &kp NUMBER_4   &kp NUMBER_5   &kp NUMBER_6   &none          &none
+&none            &kp F9   &kp F10   &kp F11   &kp F12   &kp LA(F7)                       /* | */                  &kp SLASH   &kp NUMBER_7   &kp NUMBER_8   &kp NUMBER_9   &kp NUMBER_0   &none
+                 &none    &none     &none     &none     &trans              &none        /* | */  &sk LC(LALT)    &trans                                    &none          &none
             >;
         };
 
 
-        MOUSE {
+        layer_2 {
             bindings = <
-&trans   &trans   &kp F7   &kp F8   &kp F9   &kp F10                         &kp LC(Y)   &kp LC(C)        &kp LC(V)        &kp LC(X)         &kp LC(P)   &trans
-&trans   &trans   &kp F4   &kp F5   &kp F6   &kp F11                         &kp LC(Z)   &mkp MB1         &kp UP_ARROW     &mkp MB2          &kp LC(F)   &trans
-&trans   &trans   &kp F1   &kp F2   &kp F3   &kp F12                         &kp LC(A)   &kp LEFT_ARROW   &kp DOWN_ARROW   &kp RIGHT_ARROW   &trans      &trans
-         &trans   &trans   &trans   &trans   &trans    &trans      &kp RET   &kp BSPC                                      &kp HOME          &kp END
+&none       &kp ASTERISK   &kp SLASH   &kp GRAVE          &kp DOLLAR       &kp COMMA                  /* | */            &kp DOT        &kp LEFT_BRACKET       &kp RIGHT_BRACKET       &kp EXCLAMATION   &kp QMARK          &kp BSPC
+&kp LCTRL   &kp PLUS       &kp MINUS   &kp DOUBLE_QUOTES  &kp EQUAL        &kp PERCENT                /* | */            &kp AT_SIGN    &kp LEFT_PARENTHESIS   &kp RIGHT_PARENTHESIS   &kp LESS_THAN     &kp GREATER_THAN   &none
+&none       &kp CARET      &kp TILDE   &kp SINGLE_QUOTE   &kp UNDERSCORE   &kp BACKSLASH              /* | */            &kp HASH       &kp LEFT_BRACE         &kp RIGHT_BRACE         &kp AMPERSAND     &kp PIPE           &none
+            &none          &none       &kp LALT           &kp LGUI         &trans          &kp SPACE  /* | */  &none     &trans                                                                          &none              &none
             >;
         };
 
 
         SCROLL {
             bindings = <
-&bt BT_CLR       &trans   &trans         &trans         &trans         &trans                                &trans   &trans   &trans   &trans   &trans   &trans
-&bt BT_CLR_ALL   &trans   &bt BT_SEL 4   &trans         &trans         &trans                                &trans   &trans   &trans   &trans   &trans   &trans
-&trans           &trans   &bt BT_SEL 1   &bt BT_SEL 2   &bt BT_SEL 3   &trans                                &trans   &trans   &trans   &trans   &trans   &trans
-                 &trans   &bt BT_SEL 0   &trans         &trans         &trans   &trans      &studio_unlock   &trans                     &trans   &trans  
+&none   &none    &none    &none    &none    &none              /* | */            &none    &none    &none    &none    &none    &none
+&none   &none    &none    &none    &none    &none              /* | */            &none    &none    &none    &none    &none    &none
+&none   &none    &none    &none    &none    &none              /* | */            &none    &none    &none    &none    &none    &none
+        &none    &none    &none    &none    &none    &none     /* | */  &none     &none                      &none    &none
             >;
         };
 
 
         layer_4 {
             bindings = <
-&trans   &trans   &trans         &trans         &trans         &trans                        &trans   &trans   &trans   &trans   &trans   &trans
-&trans   &trans   &bt BT_SEL 4   &trans         &trans         &trans                        &trans   &trans   &trans   &trans   &trans   &trans
-&trans   &trans   &bt BT_SEL 1   &bt BT_SEL 2   &bt BT_SEL 3   &trans                        &trans   &trans   &trans   &trans   &trans   &trans
-         &trans   &bt BT_SEL 0   &trans         &trans         &trans   &trans      &trans   &trans                     &trans   &trans 
+&none        &none       &none       &kp LCTRL   &kp LGUI   &sk LC(LS(LA(LGUI)))            /* | */                  &none                  &kp LA(LEFT_ARROW)   &kp UP_ARROW     &kp LA(RIGHT_ARROW)   &none                   &none
+&kp LCTRL    &kp LA(A)   &kp LA(S)   &kp LALT    &kp TAB    &kp LS(TAB)                     /* | */                  &kp LG(LEFT_BRACKET)   &kp LEFT_ARROW       &kp DOWN_ARROW   &kp RIGHT_ARROW       &kp LG(RIGHT_BRACKET)   &none
+&kp LSHIFT   &none       &kp LA(X)   &kp LA(C)   &none      &none                           /* | */                  &none                  &kp LG(LEFT_ARROW)   &none            &kp LG(RIGHT_ARROW)   &kp LC(UP_ARROW)        &none
+             &none       &none       &none       &none      &none                  &none    /* | */  &kp LSHIFT      &kp LGUI                                                     &none                 &none
             >;
         };
 
 
         layer_5 {
             bindings = <
-&trans   &trans   &trans   &trans   &trans   &trans                        &trans   &trans   &trans   &trans   &trans   &trans
-&trans   &trans   &trans   &trans   &trans   &trans                        &trans   &trans   &trans   &trans   &trans   &trans
-&trans   &trans   &trans   &trans   &trans   &trans                        &trans   &trans   &trans   &trans   &trans   &trans
-         &trans   &trans   &trans   &trans   &trans   &trans      &trans   &trans                     &trans   &trans       
+&none    &kp LS(Q)   &kp LS(L)   &kp LS(U)   &kp SEMI    &kp COLON                /* | */            &kp LS(F)   &kp LS(W)   &kp LS(R)   &kp LS(Y)   &kp LS(P)   &none
+&none    &kp LS(E)   &kp LS(I)   &kp LS(A)   &kp LS(O)   &kp COMMA                /* | */            &kp LS(K)   &kp LS(T)   &kp LS(N)   &kp LS(S)   &kp LS(H)   &none
+&none    &kp LS(Z)   &kp LS(X)   &kp LS(C)   &kp LS(V)   &kp DOT                  /* | */            &kp LS(G)   &kp LS(D)   &kp LS(M)   &kp LS(J)   &kp LS(B)   &none
+         &none       &none       &none       &none       &none       &none        /* | */  &none     &none                               &none       &none
             >;
         };
 
 
         layer_6 {
             bindings = <
-&trans   &trans   &trans   &trans   &trans   &trans                        &trans   &trans   &trans   &trans   &trans   &trans
-&trans   &trans   &trans   &trans   &trans   &trans                        &trans   &trans   &trans   &trans   &trans   &trans
-&trans   &trans   &trans   &trans   &trans   &trans                        &trans   &trans   &trans   &trans   &trans   &trans
-         &trans   &trans   &trans   &trans   &trans   &trans      &trans   &trans                     &trans   &trans 
+&bt BT_CLR        &none    &none    &none    &none    &none              /* | */            &none    &bt BT_SEL 0    &bt BT_SEL 1    &bt BT_SEL 2    &none    &none
+&bt BT_CLR_ALL    &none    &none    &none    &none    &none              /* | */            &none    &bt BT_SEL 3    &bt BT_SEL 4    &none           &none    &none
+&studio_unlock    &none    &none    &none    &none    &none              /* | */            &none    &none           &none           &none           &none    &none
+                  &none    &none    &none    &none    &none    &none     /* | */  &none     &none                                    &none           &none
+            >;
+        };
+
+
+        qwerty_layer {
+            bindings = <
+&kp TAB      &kp Q     &kp W      &kp E     &kp R      &kp T                    /* | */              &kp Y       &kp U   &kp I       &kp O       &kp P      &kp BSPC
+&kp LCTRL    &kp A     &kp S      &kp D     &kp F      &kp G                    /* | */              &kp H       &kp J   &kp K       &kp L       &kp SEMI   &kp ESC
+&kp LSHIFT   &kp Z     &kp X      &kp C     &kp V      &kp B                    /* | */              &kp N       &kp M   &kp COMMA   &kp DOT     &kp SLASH  &none
+             &none     &none      &kp LALT  &kp LGUI   &kp LANG2     &kp SPACE  /* | */  &kp RET     &kp LANG1                       &none       &none
             >;
         };
     };
