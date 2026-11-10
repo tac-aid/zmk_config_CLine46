@@ -75,7 +75,8 @@
         layers = <8>;
         input-processors =
             <&zip_y_scaler 0 1>,                                //Y軸（縦）の移動を無効化（横スクロールのみ）
-            <&zip_xy_to_scroll_mapper>;                         //先にスクロールイベント(HWHEEL)に変換
+            <&zip_xy_to_scroll_mapper>,                         //先にスクロールイベント(HWHEEL)に変換
+            <&zip_scroll_x_scaler 3 128>;                       //横スクロール速度：縦(3/32)のさらに1/4倍 (= 3/128)
             //<&zip_scroll_transform INPUT_TRANSFORM_X_INVERT>;   //横スクロールの方向反転（逆にする場合は有効化）
     };
 
@@ -88,8 +89,8 @@
             <&zip_xy_transform INPUT_TRANSFORM_Y_INVERT>,       //Y軸反転
             <&zip_xy_to_scroll_mapper>,                         //スクロールモードに変更
             //<&zip_scroll_transform INPUT_TRANSFORM_Y_INVERT>,   //縦スクロールのY軸反転
-            <&zip_scroll_scaler 3 4>,                           //CPI 800 → 600相当(3/4倍)に補正
-            <&scroll_runtime_input_processor>;                  //スクロール量(1/8倍)・軸スナップをDYA Studioから調整可能に
+            <&zip_scroll_y_scaler 3 32>;                        //縦スクロール速度：CPI 800で従来のCPI 600×1/8相当 (= 3/32)
+            //<&scroll_runtime_input_processor>;                  //DYA Studio用ランタイムプロセッサ（不使用のため無効化）
     };
 };
 
